@@ -491,8 +491,8 @@ Transform:
   m_GameObject: {fileID: 238187186}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.77, y: -2.7, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.35, z: 0.15}
+  m_LocalPosition: {x: -4.77, y: -3.876, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.25, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 615817150}
@@ -510,8 +510,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974f0ab82c2251a4ba16572250787c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NinjaMovement
-  terminalVelocityX: 4
-  accelerationConstant: 0.2
+  terminalVelocityX: 3.5
+  accelerationConstant: 0.15
   minJumpHeight: 0.25
   maxJumpHeight: 0.65
   verticalAppliedForce: 0.5
@@ -548,8 +548,8 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultControlScheme: Keyboard&Mouse
+  m_DefaultActionMap: Ninja
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!50 &238187192
@@ -566,9 +566,9 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 417e3798235be2640b7ade5fcc868693, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

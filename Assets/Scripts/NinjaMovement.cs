@@ -145,7 +145,7 @@ public class NinjaMovement : MonoBehaviour
         if (rightSliding && !Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
             rightSliding = false;
         if (leftSliding && !Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
-            leftJumping = false;
+            leftSliding = false;
 
         if (leftSliding || rightSliding)
         {

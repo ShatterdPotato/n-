@@ -96,14 +96,14 @@ public class NinjaMovement : MonoBehaviour
             leftSliding = false;
             leftJumping = true;
             ninjaPhysics.linearVelocity = wallJumpForce;
-            jumpYPivot = transform.position.y;
+            timeHeld = 0f;
         }
         if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
         {
             rightSliding = false;
             rightJumping = true;
             ninjaPhysics.linearVelocity = new Vector2(-1 * wallJumpForce.x, wallJumpForce.y);
-            jumpYPivot = transform.position.y;
+            timeHeld = 0f;
         }
         if (grounded)
         {
@@ -114,7 +114,6 @@ public class NinjaMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        print(rightJumping);
         grounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
         if (ninjaInputs == null) return;
         if (ninjaInputs.Ninja.Movement.IsPressed())
@@ -132,6 +131,7 @@ public class NinjaMovement : MonoBehaviour
 
         if (ninjaInputs.Ninja.Jump.IsPressed() && jumping)
         {
+            print("BYE");
             ninjaPhysics.linearVelocityY += verticalAppliedForce;
             deltaJumpPos = transform.position.y - jumpYPivot;
             if (deltaJumpPos > maxJumpHeight)
@@ -146,8 +146,9 @@ public class NinjaMovement : MonoBehaviour
         }
         else if (ninjaInputs.Ninja.Jump.IsPressed() && leftJumping)
         {
+            print("HI");
             ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
-            ninjaPhysics.linearVelocityX = wallJumpForce.x;
+            ninjaPhysics.linearVelocityX += wallJumpForce.x * Time.deltaTime;
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {
@@ -163,7 +164,7 @@ public class NinjaMovement : MonoBehaviour
         else if (ninjaInputs.Ninja.Jump.IsPressed() && rightJumping)
         {
             ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
-            ninjaPhysics.linearVelocityX = -1 * wallJumpForce.x;
+            ninjaPhysics.linearVelocityX += -1 * wallJumpForce.x * Time.deltaTime;
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {
@@ -183,6 +184,8 @@ public class NinjaMovement : MonoBehaviour
             if (horizontalAcc == -1 && !grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
                 leftSliding = true;
             jumping = false;
+            leftJumping = false;
+            rightJumping = false;
         }
 
         if (rightSliding && !Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))

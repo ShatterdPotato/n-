@@ -516,6 +516,7 @@ MonoBehaviour:
   accelerationConstant: 0.15
   minJumpHeight: 0.25
   maxJumpHeight: 0.65
+  maxJumpTime: 1
   frictionModifier: 1.5
   verticalAppliedForce: 0.5
   wallJumpForce: {x: 4, y: 4}
@@ -532,6 +533,7 @@ MonoBehaviour:
     m_Bits: 72
   deltaJumpPos: 0
   horizontalAcc: 0
+  timeHeld: 0
 --- !u!114 &238187191
 MonoBehaviour:
   m_ObjectHideFlags: 0

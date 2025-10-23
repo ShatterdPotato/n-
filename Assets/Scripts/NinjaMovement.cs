@@ -13,7 +13,7 @@ public class NinjaMovement : MonoBehaviour
     [SerializeField] public float maxJumpHeight;                                //maximum height ninja can jump, regardles of how long jump input is held.
     [SerializeField] public float frictionModifier;                             //fricitonal force that decelerates ninja to rest. 1 = 1 second, < 1 increases time, > 1 decreases time.
     [SerializeField] public float verticalAppliedForce;                         //makes the ninja jump up to max height quicker.
-    [SerializeField] public float wallJumpForce;                                //outwards jump force after wall-jumping.
+    [SerializeField] public Vector2 wallJumpForce;                              //sets the velocity of the ninja for a wall-jump.
     [SerializeField] public float terminalSlideVelocity;                        //speed in which ninja slides down wall while wall-sliding.
     [SerializeField] public Transform groundCheck;                              //stores empty GameObject pos for calculating if ninja is touching ground.
     [SerializeField] public Transform leftWallCheck;                            //stores empty GameObject pos for calculating if ninja is in contact with a wall from the left.
@@ -41,6 +41,12 @@ public class NinjaMovement : MonoBehaviour
         horizontalAcc = 0.0f;
         deltaJumpPos = 0.0f;
         ninjaPhysics = GetComponent<Rigidbody2D>();
+        leftJumping = false;
+        rightJumping = false;
+        leftSliding = false;
+        rightSliding = false;
+        grounded = true;
+        jumpYPivot = 0.0f;
     }
 
     private void OnEnable()
@@ -64,9 +70,9 @@ public class NinjaMovement : MonoBehaviour
     {
         horizontalAcc = context.ReadValue<float>();
         
-        if (Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+        if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
             rightSliding = true;
-        if (Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+        else if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
             leftSliding = true;
         if (horizontalAcc == -1)
         {
@@ -83,17 +89,19 @@ public class NinjaMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         
-        rightSliding = false;   
-        
         if (leftSliding)
         {
             leftSliding = false;
             leftJumping = true;
+            ninjaPhysics.linearVelocity = wallJumpForce;
+            jumpYPivot = transform.position.y;
         }
-        else if (rightSliding)
+        if (rightSliding)
         {
             rightSliding = false;
             rightJumping = true;
+            ninjaPhysics.linearVelocity = new Vector2(-1 * wallJumpForce.x, wallJumpForce.y);
+            jumpYPivot = transform.position.y;
         }
         if (grounded)
         {
@@ -104,6 +112,7 @@ public class NinjaMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        print(rightJumping);
         grounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
         if (ninjaInputs == null) return;
         if (ninjaInputs.Ninja.Movement.IsPressed())
@@ -115,7 +124,7 @@ public class NinjaMovement : MonoBehaviour
         else if (!ninjaInputs.Ninja.Movement.IsPressed() && ninjaPhysics.linearVelocityX != 0)
         {
             ninjaPhysics.linearVelocityX -= Math.Sign(ninjaPhysics.linearVelocityX) * terminalVelocityX * Time.deltaTime * frictionModifier;
-            if (Math.Abs(ninjaPhysics.linearVelocityX) < 0)
+            if (Math.Abs(ninjaPhysics.linearVelocityX) <= 0)
                 ninjaPhysics.linearVelocityX = 0;
         }
 
@@ -125,19 +134,47 @@ public class NinjaMovement : MonoBehaviour
             deltaJumpPos = transform.position.y - jumpYPivot;
             if (deltaJumpPos > maxJumpHeight)
             {
-                if (Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+                if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
                     rightSliding = true;
-                if (Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+                else if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
                     leftSliding = true;
                 jumping = false;
                 deltaJumpPos = 0f;
             }
         }
+        else if (ninjaInputs.Ninja.Jump.IsPressed() && leftJumping)
+        {
+            deltaJumpPos = transform.position.y - jumpYPivot;
+            if (deltaJumpPos > maxJumpHeight)
+            {
+                if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+                    rightSliding = true;
+                if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+                    leftSliding = true;
+                leftJumping = false;
+                deltaJumpPos = 0f;
+            }
+
+        }
+        else if (ninjaInputs.Ninja.Jump.IsPressed() && rightJumping)
+        {
+            deltaJumpPos = transform.position.y - jumpYPivot;
+            if (deltaJumpPos > maxJumpHeight)
+            {
+                if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+                    rightSliding = true;
+                if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+                    leftSliding = true;
+                rightJumping = false;
+                deltaJumpPos = 0f;
+            }
+
+        }
         else
         {
-            if (horizontalAcc == 1 && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+            if (horizontalAcc == 1 && !grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
                 rightSliding = true;
-            if (horizontalAcc == -1 && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+            if (horizontalAcc == -1 && !grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
                 leftSliding = true;
             jumping = false;
         }
@@ -149,7 +186,12 @@ public class NinjaMovement : MonoBehaviour
 
         if (leftSliding || rightSliding)
         {
-            ninjaPhysics.linearVelocityY = Mathf.Clamp(ninjaPhysics.linearVelocityY, terminalSlideVelocity, float.MaxValue);
+            if (ninjaPhysics.linearVelocityY > terminalSlideVelocity)
+            {
+                ninjaPhysics.linearVelocityY -= terminalSlideVelocity * Time.deltaTime;
+            }
+            else
+                ninjaPhysics.linearVelocityY = Mathf.Clamp(ninjaPhysics.linearVelocityY, terminalSlideVelocity, float.MaxValue);
         }
 
     }

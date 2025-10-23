@@ -518,7 +518,7 @@ MonoBehaviour:
   maxJumpHeight: 0.65
   frictionModifier: 1.5
   verticalAppliedForce: 0.5
-  wallJumpForce: 0
+  wallJumpForce: {x: 4, y: 4}
   terminalSlideVelocity: -0.5
   groundCheck: {fileID: 615817150}
   leftWallCheck: {fileID: 1360893066}

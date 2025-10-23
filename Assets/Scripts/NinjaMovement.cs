@@ -148,7 +148,10 @@ public class NinjaMovement : MonoBehaviour
         {
             print("HI");
             ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
-            ninjaPhysics.linearVelocityX += wallJumpForce.x * Time.deltaTime;
+            if (horizontalAcc == -11)
+                ninjaPhysics.linearVelocityX += .5 * wallJumpForce.x * Time.deltaTime;
+            else
+                ninjaPhysics.linearVelocityX += wallJumpForce.x * Time.deltaTime;
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {
@@ -164,7 +167,10 @@ public class NinjaMovement : MonoBehaviour
         else if (ninjaInputs.Ninja.Jump.IsPressed() && rightJumping)
         {
             ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
-            ninjaPhysics.linearVelocityX += -1 * wallJumpForce.x * Time.deltaTime;
+            if (horizontalAcc == 1)
+                ninjaPhysics.linearVelocityX += -.5 * wallJumpForce.x * Time.deltaTime;
+            else
+                ninjaPhysics.linearVelocityX += -1 * wallJumpForce.x * Time.deltaTime;
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {

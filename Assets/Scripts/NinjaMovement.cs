@@ -7,14 +7,17 @@ using UnityEngine.InputSystem;
 
 public class NinjaMovement : MonoBehaviour
 {
+    
     [SerializeField] public float terminalVelocityX;                            //maximum velocity for the ninja horizontally.
     [SerializeField] public float accelerationConstant;                         //how quickly the ninja accelerates to its terminal velocity.
     [SerializeField] public float minJumpHeight;                                //the abolsute minimum distance the ninja can jump, as if they only held the jump input for a single frame.
     [SerializeField] public float maxJumpHeight;                                //maximum height ninja can jump, regardles of how long jump input is held.
     [SerializeField] public float maxJumpTime;                                  //max time jump gives vertical force while held
     [SerializeField] public float frictionModifier;                             //fricitonal force that decelerates ninja to rest. 1 = 1 second, < 1 increases time, > 1 decreases time.
+    [SerializeField] public float backwardsHorizontalForce;                     //this is the horizontal velocity for a wall jump if the ninja wall jumps yet is pressing the keys that go towards the wall.
     [SerializeField] public float verticalAppliedForce;                         //makes the ninja jump up to max height quicker.
     [SerializeField] public Vector2 wallJumpForce;                              //sets the velocity of the ninja for a wall-jump.
+    [SerializeField] public Vector2 initialWallJumpForce;                       //initial velocity of the ninja for a wall-jump.
     [SerializeField] public float terminalSlideVelocity;                        //speed in which ninja slides down wall while wall-sliding.
     [SerializeField] public Transform groundCheck;                              //stores empty GameObject pos for calculating if ninja is touching ground.
     [SerializeField] public Transform leftWallCheck;                            //stores empty GameObject pos for calculating if ninja is in contact with a wall from the left.
@@ -95,14 +98,22 @@ public class NinjaMovement : MonoBehaviour
         {
             leftSliding = false;
             leftJumping = true;
-            ninjaPhysics.linearVelocity = wallJumpForce;
+            ninjaPhysics.linearVelocityY = initialWallJumpForce.y;
+            if (horizontalAcc == -1)
+                ninjaPhysics.linearVelocityX = backwardsHorizontalForce;
+            else
+                ninjaPhysics.linearVelocityX = initialWallJumpForce.x;
             timeHeld = 0f;
         }
         if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
         {
             rightSliding = false;
             rightJumping = true;
-            ninjaPhysics.linearVelocity = new Vector2(-1 * wallJumpForce.x, wallJumpForce.y);
+            ninjaPhysics.linearVelocityY = initialWallJumpForce.y;
+            if (horizontalAcc == 1)
+                ninjaPhysics.linearVelocityX = -1 * backwardsHorizontalForce;
+            else
+                ninjaPhysics.linearVelocityX = -1 * initialWallJumpForce.x;
             timeHeld = 0f;
         }
         if (grounded)
@@ -131,7 +142,6 @@ public class NinjaMovement : MonoBehaviour
 
         if (ninjaInputs.Ninja.Jump.IsPressed() && jumping)
         {
-            print("BYE");
             ninjaPhysics.linearVelocityY += verticalAppliedForce;
             deltaJumpPos = transform.position.y - jumpYPivot;
             if (deltaJumpPos > maxJumpHeight)
@@ -146,12 +156,8 @@ public class NinjaMovement : MonoBehaviour
         }
         else if (ninjaInputs.Ninja.Jump.IsPressed() && leftJumping)
         {
-            print("HI");
             ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
-            if (horizontalAcc == -11)
-                ninjaPhysics.linearVelocityX += .5 * wallJumpForce.x * Time.deltaTime;
-            else
-                ninjaPhysics.linearVelocityX += wallJumpForce.x * Time.deltaTime;
+            ninjaPhysics.linearVelocityX += wallJumpForce.x * Time.deltaTime;
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {
@@ -167,10 +173,7 @@ public class NinjaMovement : MonoBehaviour
         else if (ninjaInputs.Ninja.Jump.IsPressed() && rightJumping)
         {
             ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
-            if (horizontalAcc == 1)
-                ninjaPhysics.linearVelocityX += -.5 * wallJumpForce.x * Time.deltaTime;
-            else
-                ninjaPhysics.linearVelocityX += -1 * wallJumpForce.x * Time.deltaTime;
+            ninjaPhysics.linearVelocityX += -1 * wallJumpForce.x * Time.deltaTime;
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {

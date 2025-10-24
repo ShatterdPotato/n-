@@ -126,6 +126,8 @@ public class NinjaMovement : MonoBehaviour
     private void FixedUpdate()
     {
         grounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+        Collider2D leftWallTouching = Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer);
+        Collider2D rightWallTouching = Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer);
         if (ninjaInputs == null) return;
         if (ninjaInputs.Ninja.Movement.IsPressed())
         {
@@ -146,9 +148,9 @@ public class NinjaMovement : MonoBehaviour
             deltaJumpPos = transform.position.y - jumpYPivot;
             if (deltaJumpPos > maxJumpHeight)
             {
-                if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+                if (!grounded && rightWallTouching)
                     rightSliding = true;
-                else if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+                else if (!grounded && leftWallTouching)
                     leftSliding = true;
                 jumping = false;
                 deltaJumpPos = 0f;
@@ -161,9 +163,9 @@ public class NinjaMovement : MonoBehaviour
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {
-                if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+                if (!grounded && rightWallTouching)
                     rightSliding = true;
-                if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+                if (!grounded && leftWallTouching)
                     leftSliding = true;
                 leftJumping = false;
                 deltaJumpPos = 0f;
@@ -177,9 +179,9 @@ public class NinjaMovement : MonoBehaviour
             timeHeld += Time.deltaTime;
             if (timeHeld > maxJumpTime)
             {
-                if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+                if (!grounded && rightWallTouching)
                     rightSliding = true;
-                if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+                if (!grounded && leftWallTouching)
                     leftSliding = true;
                 rightJumping = false;
                 deltaJumpPos = 0f;

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -28,16 +29,18 @@ public class NinjaMovement : MonoBehaviour
     [SerializeField] private float deltaJumpPos;
     [SerializeField] private float horizontalAcc;
     [SerializeField] private float timeHeld;
+    [SerializeField] private bool grounded;
+    [SerializeField] private bool jumping;
+    [SerializeField] private bool leftSliding;
+    [SerializeField] private bool rightSliding;
+    [SerializeField] private bool leftJumping;
+    [SerializeField] private bool rightJumping;
 
     private NinjaControls ninjaInputs;
     private Rigidbody2D ninjaPhysics;
-    private bool grounded;
-    private bool jumping;
-    private bool leftSliding;
-    private bool rightSliding;
-    private bool leftJumping;
-    private bool rightJumping;
     private float jumpYPivot;
+    private Collider2D leftWallTouching;
+    private Collider2D rightWallTouching;
    
    
     private void Awake()
@@ -50,6 +53,8 @@ public class NinjaMovement : MonoBehaviour
         rightJumping = false;
         leftSliding = false;
         rightSliding = false;
+        leftWallTouching = null;
+        rightWallTouching = null;
         grounded = true;
         jumpYPivot = 0.0f;
     }
@@ -75,133 +80,145 @@ public class NinjaMovement : MonoBehaviour
     {
         horizontalAcc = context.ReadValue<float>();
         
-        if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
-            rightSliding = true;
-        else if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
-            leftSliding = true;
+        rightSliding = !grounded && rightWallTouching;
+        leftSliding = !grounded && leftWallTouching;
         if (horizontalAcc == -1)
-        {
             rightSliding = false;
-
-        }
         else if (horizontalAcc == 1)
-        {
             leftSliding = false;
-           
-        }
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        
-        if (!grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+        Action initializeJumpForce = () =>
         {
-            leftSliding = false;
-            leftJumping = true;
             ninjaPhysics.linearVelocityY = initialWallJumpForce.y;
             if (horizontalAcc == -1)
                 ninjaPhysics.linearVelocityX = backwardsHorizontalForce;
+            else if (horizontalAcc == 1)
+                ninjaPhysics.linearVelocityX = -1 * backwardsHorizontalForce;
             else
                 ninjaPhysics.linearVelocityX = initialWallJumpForce.x;
             timeHeld = 0f;
-        }
-        if (!grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
-        {
-            rightSliding = false;
-            rightJumping = true;
-            ninjaPhysics.linearVelocityY = initialWallJumpForce.y;
-            if (horizontalAcc == 1)
-                ninjaPhysics.linearVelocityX = -1 * backwardsHorizontalForce;
-            else
-                ninjaPhysics.linearVelocityX = -1 * initialWallJumpForce.x;
-            timeHeld = 0f;
-        }
+        };
+
         if (grounded)
         {
             jumping = true;
             jumpYPivot = transform.position.y;
         }
+        else if (!grounded && leftWallTouching)
+        {
+            leftSliding = false;
+            leftJumping = true;
+            initializeJumpForce();
+        }
+        else if (!grounded && rightWallTouching)
+        {
+            rightSliding = false;
+            rightJumping = true;
+            initializeJumpForce();  
+        }
+        
     }
 
     private void FixedUpdate()
     {
         grounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
-        Collider2D leftWallTouching = Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer);
-        Collider2D rightWallTouching = Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer);
+        leftWallTouching = Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer);
+        rightWallTouching = Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer);
         if (ninjaInputs == null) return;
+        bool jumpPressed = ninjaInputs.Ninja.Jump.IsPressed();
+
+        handleMovement();
+        handleJumpMovement(jumpPressed);
+        handleWallMovement();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow; 
+        Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
+        Gizmos.DrawWireSphere(rightWallCheck.position, checkRadius);
+        Gizmos.DrawWireSphere(leftWallCheck.position, checkRadius);
+    }
+
+    private void handleMovement()
+    {
         if (ninjaInputs.Ninja.Movement.IsPressed())
         {
             ninjaPhysics.linearVelocityX += horizontalAcc * accelerationConstant;
             if (Math.Abs(ninjaPhysics.linearVelocityX) > terminalVelocityX)
                 ninjaPhysics.linearVelocityX = horizontalAcc * terminalVelocityX;
         }
-        else if (!ninjaInputs.Ninja.Movement.IsPressed() && ninjaPhysics.linearVelocityX != 0)
+        else if (ninjaPhysics.linearVelocityX != 0)
         {
             ninjaPhysics.linearVelocityX -= Math.Sign(ninjaPhysics.linearVelocityX) * terminalVelocityX * Time.deltaTime * frictionModifier;
             if (Math.Abs(ninjaPhysics.linearVelocityX) <= 0)
                 ninjaPhysics.linearVelocityX = 0;
         }
+    }
 
-        if (ninjaInputs.Ninja.Jump.IsPressed() && jumping)
+    private void handleJumpMovement(bool jumpPressed)
+    {
+        Action<int> jumpTimeCalc = (direction) => //dont ask why I did an int here just accept it ok? (-1 = left, 1 = right, 0 = ground) see it works im a genius
         {
-            ninjaPhysics.linearVelocityY += verticalAppliedForce;
-            deltaJumpPos = transform.position.y - jumpYPivot;
-            if (deltaJumpPos > maxJumpHeight)
+            print(timeHeld);
+            if (direction != 0)
+                timeHeld += Time.deltaTime;
+            else
+                deltaJumpPos = transform.position.y - jumpYPivot;
+            if (timeHeld > maxJumpTime || (direction == 0 && deltaJumpPos > maxJumpHeight))
             {
                 if (!grounded && rightWallTouching)
                     rightSliding = true;
                 else if (!grounded && leftWallTouching)
                     leftSliding = true;
-                jumping = false;
+                if (direction == -1)
+                    leftJumping = false;
+                else if (direction == 0)
+                    jumping = false;
+                else
+                    rightJumping = false;
                 deltaJumpPos = 0f;
             }
-        }
-        else if (ninjaInputs.Ninja.Jump.IsPressed() && leftJumping)
-        {
-            ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
-            ninjaPhysics.linearVelocityX += wallJumpForce.x * Time.deltaTime;
-            timeHeld += Time.deltaTime;
-            if (timeHeld > maxJumpTime)
-            {
-                if (!grounded && rightWallTouching)
-                    rightSliding = true;
-                if (!grounded && leftWallTouching)
-                    leftSliding = true;
-                leftJumping = false;
-                deltaJumpPos = 0f;
-            }
+        };
 
+        if (jumpPressed && jumping)
+        {
+            print("Hi");
+            ninjaPhysics.linearVelocityY += verticalAppliedForce;
+            jumpTimeCalc(0);
         }
-        else if (ninjaInputs.Ninja.Jump.IsPressed() && rightJumping)
+        else if (jumpPressed && leftJumping)
+        {
+            ninjaPhysics.linearVelocity += wallJumpForce * Time.deltaTime;
+            jumpTimeCalc(-1);
+        }
+        else if (jumpPressed && rightJumping)
         {
             ninjaPhysics.linearVelocityY += wallJumpForce.y * Time.deltaTime;
             ninjaPhysics.linearVelocityX += -1 * wallJumpForce.x * Time.deltaTime;
-            timeHeld += Time.deltaTime;
-            if (timeHeld > maxJumpTime)
-            {
-                if (!grounded && rightWallTouching)
-                    rightSliding = true;
-                if (!grounded && leftWallTouching)
-                    leftSliding = true;
-                rightJumping = false;
-                deltaJumpPos = 0f;
-            }
+            jumpTimeCalc(1);
 
         }
         else
         {
-            if (horizontalAcc == 1 && !grounded && Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+            if (horizontalAcc == 1 && !grounded && rightWallTouching)
                 rightSliding = true;
-            if (horizontalAcc == -1 && !grounded && Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+            if (horizontalAcc == -1 && !grounded && leftWallTouching)
                 leftSliding = true;
             jumping = false;
             leftJumping = false;
             rightJumping = false;
         }
+    }
 
-        if (rightSliding && !Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer))
+    private void handleWallMovement() 
+    {
+        if (rightSliding && !rightWallTouching)
             rightSliding = false;
-        if (leftSliding && !Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer))
+        if (leftSliding && !leftWallTouching)
             leftSliding = false;
 
         if (leftSliding || rightSliding)
@@ -213,15 +230,6 @@ public class NinjaMovement : MonoBehaviour
             else
                 ninjaPhysics.linearVelocityY = Mathf.Clamp(ninjaPhysics.linearVelocityY, terminalSlideVelocity, float.MaxValue);
         }
-
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow; 
-        Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
-        Gizmos.DrawWireSphere(rightWallCheck.position, checkRadius);
-        Gizmos.DrawWireSphere(leftWallCheck.position, checkRadius);
     }
 }
 

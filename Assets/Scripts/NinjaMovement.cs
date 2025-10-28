@@ -97,8 +97,10 @@ public class NinjaMovement : MonoBehaviour
                 ninjaPhysics.linearVelocityX = backwardsHorizontalForce;
             else if (horizontalAcc == 1)
                 ninjaPhysics.linearVelocityX = -1 * backwardsHorizontalForce;
-            else
+            else if (leftWallTouching)
                 ninjaPhysics.linearVelocityX = initialWallJumpForce.x;
+            else if (rightWallTouching)
+                ninjaPhysics.linearVelocityX = -1 * initialWallJumpForce.x;
             timeHeld = 0f;
         };
 
@@ -163,7 +165,6 @@ public class NinjaMovement : MonoBehaviour
     {
         Action<int> jumpTimeCalc = (direction) => //dont ask why I did an int here just accept it ok? (-1 = left, 1 = right, 0 = ground) see it works im a genius
         {
-            print(timeHeld);
             if (direction != 0)
                 timeHeld += Time.deltaTime;
             else
@@ -180,13 +181,13 @@ public class NinjaMovement : MonoBehaviour
                     jumping = false;
                 else
                     rightJumping = false;
+                timeHeld = 0f;
                 deltaJumpPos = 0f;
             }
         };
 
         if (jumpPressed && jumping)
         {
-            print("Hi");
             ninjaPhysics.linearVelocityY += verticalAppliedForce;
             jumpTimeCalc(0);
         }

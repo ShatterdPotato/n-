@@ -126,6 +126,7 @@ public class NinjaMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        print(ninjaPhysics.linearVelocityX);
         grounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
         leftWallTouching = Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer);
         rightWallTouching = Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer);
@@ -156,7 +157,7 @@ public class NinjaMovement : MonoBehaviour
         else if (ninjaPhysics.linearVelocityX != 0)
         {
             ninjaPhysics.linearVelocityX -= Math.Sign(ninjaPhysics.linearVelocityX) * terminalVelocityX * Time.deltaTime * frictionModifier;
-            if (Math.Abs(ninjaPhysics.linearVelocityX) <= 0)
+            if (Math.Abs(ninjaPhysics.linearVelocityX) < 0.1)
                 ninjaPhysics.linearVelocityX = 0;
         }
     }

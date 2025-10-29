@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 public class NinjaMovement : MonoBehaviour
 {
-    
+
     [SerializeField] public float terminalVelocityX;                            //maximum velocity for the ninja horizontally.
     [SerializeField] public float accelerationConstant;                         //how quickly the ninja accelerates to its terminal velocity.
     [SerializeField] public float minJumpHeight;                                //the abolsute minimum distance the ninja can jump, as if they only held the jump input for a single frame.
@@ -36,13 +36,15 @@ public class NinjaMovement : MonoBehaviour
     [SerializeField] private bool leftJumping;
     [SerializeField] private bool rightJumping;
 
+
     private NinjaControls ninjaInputs;
     private Rigidbody2D ninjaPhysics;
     private float jumpYPivot;
     private Collider2D leftWallTouching;
     private Collider2D rightWallTouching;
-   
-   
+    private bool sloped;
+
+
     private void Awake()
     {
         ninjaInputs = new NinjaControls();
@@ -67,7 +69,7 @@ public class NinjaMovement : MonoBehaviour
         ninjaInputs.Ninja.Jump.performed += OnJump;
         ninjaInputs.Ninja.Movement.canceled += OnMove;
     }
-        
+
     private void OnDisable()
     {
         if (ninjaInputs == null) return;
@@ -79,7 +81,7 @@ public class NinjaMovement : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         horizontalAcc = context.ReadValue<float>();
-        
+
         rightSliding = !grounded && rightWallTouching;
         leftSliding = !grounded && leftWallTouching;
         if (horizontalAcc == -1)
@@ -119,9 +121,9 @@ public class NinjaMovement : MonoBehaviour
         {
             rightSliding = false;
             rightJumping = true;
-            initializeJumpForce();  
+            initializeJumpForce();
         }
-        
+
     }
 
     private void FixedUpdate()
@@ -132,14 +134,17 @@ public class NinjaMovement : MonoBehaviour
         if (ninjaInputs == null) return;
         bool jumpPressed = ninjaInputs.Ninja.Jump.IsPressed();
 
-        handleMovement();
+        if (sloped)
+            handleSlopedMovement();
+        else
+            handleMovement();
         handleJumpMovement(jumpPressed);
         handleWallMovement();
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow; 
+        Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
         Gizmos.DrawWireSphere(rightWallCheck.position, checkRadius);
         Gizmos.DrawWireSphere(leftWallCheck.position, checkRadius);
@@ -160,6 +165,24 @@ public class NinjaMovement : MonoBehaviour
                 ninjaPhysics.linearVelocityX = 0;
         }
     }
+
+    private void handleSlopedMovement()
+    {
+        if (ninjaInputs.Ninja.Movement.IsPressed())
+        {
+            ninjaPhysics.linearVelocityX += Math.Cos(Math.PI / 4) * (horizontalAcc * accelerationConstant);
+            ninjaPhysics.linearVelocityY += Math.Sin(Math.PI / 4) * (horizontalAcc * accelerationConstant);
+            if (Math.Abs(Math.sqrt(ninjaPhysics.linearVelocityX ** 2 + ninjaPhysics.linearVelocityY ** 2)) > terminalVelocityX)
+                ninjaPhysics.linearVelocityX = horizontalAcc * terminalVelocityX;
+        }
+        else if (ninjaPhysics.linearVelocityX != 0)
+        {
+            ninjaPhysics.linearVelocityX -= Math.Sign(ninjaPhysics.linearVelocityX) * terminalVelocityX * Time.deltaTime * frictionModifier;
+            if (Math.Abs(ninjaPhysics.linearVelocityX) < 0.1)
+                ninjaPhysics.linearVelocityX = 0;
+        }
+    }
+
 
     private void handleJumpMovement(bool jumpPressed)
     {
@@ -215,7 +238,7 @@ public class NinjaMovement : MonoBehaviour
         }
     }
 
-    private void handleWallMovement() 
+    private void handleWallMovement()
     {
         if (rightSliding && !rightWallTouching)
             rightSliding = false;
@@ -231,6 +254,16 @@ public class NinjaMovement : MonoBehaviour
             else
                 ninjaPhysics.linearVelocityY = Mathf.Clamp(ninjaPhysics.linearVelocityY, terminalSlideVelocity, float.MaxValue);
         }
+    }
+
+    public void toggleSloped()
+    {
+        sloped = !sloped;
+    }
+    
+    public bool isSloped()
+    {
+        return sloped;
     }
 }
 

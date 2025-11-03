@@ -26,6 +26,8 @@ public class NinjaMovement : MonoBehaviour
     [SerializeField] public float checkRadius;                                  //radius for circle used for any "checks" to see if ninja is near a ground or wall.
     [SerializeField] public LayerMask groundLayer;                              //Layer of all blocks that the ninja can jump on.
     [SerializeField] public LayerMask wallLayer;                                //Layer of all blocks that the ninja can cling onto.
+    [SerializeField] public LayerMask slopeLayer;                                //Layer of all slopes.
+    [SerializeField] public Collider2D ninjaHitbox;                              //associated Collider2D of ninja.
     [SerializeField] private float deltaJumpPos;
     [SerializeField] private float horizontalAcc;
     [SerializeField] private float timeHeld;
@@ -170,6 +172,7 @@ public class NinjaMovement : MonoBehaviour
     {
         if (ninjaInputs.Ninja.Movement.IsPressed())
         {
+            print(ninjaPhysics.linearVelocityY);
             ninjaPhysics.linearVelocityX += (float)Math.Cos(Math.PI / 4) * (horizontalAcc * accelerationConstant);
             ninjaPhysics.linearVelocityY += (float)Math.Sin(Math.PI / 4) * (horizontalAcc * accelerationConstant);
             if (Math.Abs(Math.Sqrt(Math.Pow(ninjaPhysics.linearVelocityX, 2) + Math.Pow(ninjaPhysics.linearVelocityY, 2))) > terminalVelocityX)
@@ -256,15 +259,17 @@ public class NinjaMovement : MonoBehaviour
         }
     }
 
-    public void toggleSloped()
+    public void makeSloped()
     {
-        sloped = !sloped;
+        sloped = true;
     }
-    
-    public bool isSloped()
+
+    public bool slopeCheck()
     {
+        sloped = Physics2D.OverlapCircle(groundCheck.position, checkRadius, slopeLayer);
         return sloped;
     }
+    
 }
 
 

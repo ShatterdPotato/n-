@@ -5,6 +5,7 @@ public class SlopeScript : MonoBehaviour
     public Collider2D ninja;
     public NinjaMovement ninjaMovement;
     public int orientation; //1 = left, -1 = right
+    public int angle;
 
     private void Awake()
     {
@@ -19,7 +20,7 @@ public class SlopeScript : MonoBehaviour
         if (collision.collider == ninja)
         {
             ninjaMovement.makeSloped();
-            ninja.transform.localEulerAngles = new Vector3(0f, 0f, orientation * 45f);
+            ninja.transform.localEulerAngles = new Vector3(0f, 0f, orientation * angle);
         }
     }
 

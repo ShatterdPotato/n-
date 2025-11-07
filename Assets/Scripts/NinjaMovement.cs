@@ -172,7 +172,6 @@ public class NinjaMovement : MonoBehaviour
     {
         if (ninjaInputs.Ninja.Movement.IsPressed())
         {
-            print(ninjaPhysics.linearVelocityY);
             ninjaPhysics.linearVelocityX += (float)Math.Cos(Math.PI / 4) * (horizontalAcc * accelerationConstant);
             ninjaPhysics.linearVelocityY += (float)Math.Sin(Math.PI / 4) * (horizontalAcc * accelerationConstant);
             if (Math.Abs(Math.Sqrt(Math.Pow(ninjaPhysics.linearVelocityX, 2) + Math.Pow(ninjaPhysics.linearVelocityY, 2))) > terminalVelocityX)

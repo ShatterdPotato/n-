@@ -548,14 +548,13 @@ Transform:
   m_GameObject: {fileID: 238187186}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.114, y: -3.8453, z: 0}
+  m_LocalPosition: {x: -2.114, y: -3.872, z: 0}
   m_LocalScale: {x: 0.1, y: 0.25, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 615817150}
   - {fileID: 1360893066}
   - {fileID: 353420812}
-  - {fileID: 423392711}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &238187190
@@ -594,7 +593,7 @@ MonoBehaviour:
   slopeLayer:
     serializedVersion: 2
     m_Bits: 128
-  ninjaEdge: {fileID: 423392712}
+  ninjaHitbox: {fileID: 238187193}
   deltaJumpPos: 0
   horizontalAcc: 0
   timeHeld: 0
@@ -707,11 +706,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!4 &272105442 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3719412882332314221, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
-  m_PrefabInstance: {fileID: 577490069963399222}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &343596366
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -972,81 +966,6 @@ Transform:
   - {fileID: 1921323880}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &423392710
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 423392711}
-  - component: {fileID: 423392712}
-  m_Layer: 0
-  m_Name: SlopeCheck
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &423392711
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423392710}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 238187189}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!68 &423392712
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423392710}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.5, y: 0}
-  - {x: 0.5, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!1001 &436820717
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1866,100 +1785,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 238187189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1418786982
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1418786983}
-  - component: {fileID: 1418786985}
-  - component: {fileID: 1418786984}
-  m_Layer: 7
-  m_Name: Ramp Hitbox
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1418786983
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418786982}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 272105442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1418786984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418786982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 768501186a4e8e94091c7a8bfe8fbbd9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SlopeScript
-  ninja: {fileID: 238187193}
-  ninjaMovement: {fileID: 238187190}
-  orientation: 0
-  angle: 45
---- !u!68 &1418786985
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418786982}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.49356246, y: -0.49246788}
-  - {x: -0.49997807, y: -0.5007553}
-  - {x: -0.49543428, y: -0.49621153}
-  - {x: 0.5, y: 0.5011804}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!1001 &1439911898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2504,10 +2329,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 137686632929361223, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3727138841511837777, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
       propertyPath: ninja
       value: 
@@ -2564,13 +2385,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slope
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4538591019834034415, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 3719412882332314221, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1418786983}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
 --- !u!1001 &2526361956622818844
@@ -2625,6 +2442,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6928246199744764132, guid: 2a94c6735aff8a54d8fbeabcc5e15ea6, type: 3}
+      propertyPath: ninja
+      value: 
+      objectReference: {fileID: 238187193}
+    - target: {fileID: 6928246199744764132, guid: 2a94c6735aff8a54d8fbeabcc5e15ea6, type: 3}
+      propertyPath: ninjaMovement
+      value: 
+      objectReference: {fileID: 238187190}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

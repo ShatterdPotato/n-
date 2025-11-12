@@ -27,7 +27,7 @@ public class NinjaMovement : MonoBehaviour
     [SerializeField] public LayerMask groundLayer;                              //Layer of all blocks that the ninja can jump on.
     [SerializeField] public LayerMask wallLayer;                                //Layer of all blocks that the ninja can cling onto.
     [SerializeField] public LayerMask slopeLayer;                                //Layer of all slopes.
-    [SerializeField] public Collider2D ninjaHitbox;                              //associated Collider2D of ninja.
+    [SerializeField] public Collider2D ninjaEdge;                                //associated Collider2D of ninja, used for slope checking.
     [SerializeField] private float deltaJumpPos;
     [SerializeField] private float horizontalAcc;
     [SerializeField] private float timeHeld;
@@ -265,7 +265,7 @@ public class NinjaMovement : MonoBehaviour
 
     public bool slopeCheck()
     {
-        sloped = Physics2D.OverlapCircle(groundCheck.position, checkRadius, slopeLayer);
+        sloped = ninjaEdge.IsTouchingLayers(slopeLayer);
         return sloped;
     }
     

@@ -38,7 +38,7 @@ public class NinjaMovement : MonoBehaviour
     [SerializeField] private bool leftJumping;
     [SerializeField] private bool rightJumping;
 
-
+    private int angle;
     private NinjaControls ninjaInputs;
     private Rigidbody2D ninjaPhysics;
     private float jumpYPivot;
@@ -130,6 +130,7 @@ public class NinjaMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        print(ninjaPhysics.linearVelocity);
         grounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
         leftWallTouching = Physics2D.OverlapCircle(leftWallCheck.position, checkRadius, wallLayer);
         rightWallTouching = Physics2D.OverlapCircle(rightWallCheck.position, checkRadius, wallLayer);
@@ -172,8 +173,8 @@ public class NinjaMovement : MonoBehaviour
     {
         if (ninjaInputs.Ninja.Movement.IsPressed())
         {
-            ninjaPhysics.linearVelocityX += (float)Math.Cos(Math.PI / 4) * (horizontalAcc * accelerationConstant);
-            ninjaPhysics.linearVelocityY += (float)Math.Sin(Math.PI / 4) * (horizontalAcc * accelerationConstant);
+            ninjaPhysics.linearVelocityX += (float)Math.Cos((Math.PI * angle) / 180) * (horizontalAcc * accelerationConstant);
+            ninjaPhysics.linearVelocityY += (float)Math.Sin((Math.PI * angle) / 180) * (horizontalAcc * accelerationConstant);
             if (Math.Abs(Math.Sqrt(Math.Pow(ninjaPhysics.linearVelocityX, 2) + Math.Pow(ninjaPhysics.linearVelocityY, 2))) > terminalVelocityX)
                 ninjaPhysics.linearVelocityX = horizontalAcc * terminalVelocityX;
         }
@@ -267,6 +268,16 @@ public class NinjaMovement : MonoBehaviour
     {
         sloped = ninjaEdge.IsTouchingLayers(slopeLayer);
         return sloped;
+    }
+
+    public void setAngle(int angle)
+    {
+        this.angle = angle;
+    }
+
+    public RigidBody2D getNinjaPhysics()
+    {
+        return ninjaPhysics;
     }
     
 }

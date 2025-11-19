@@ -275,7 +275,7 @@ public class NinjaMovement : MonoBehaviour
         this.angle = angle;
     }
 
-    public RigidBody2D getNinjaPhysics()
+    public Rigidbody2D getNinjaPhysics()
     {
         return ninjaPhysics;
     }

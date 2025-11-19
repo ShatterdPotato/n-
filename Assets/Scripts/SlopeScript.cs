@@ -7,7 +7,7 @@ public class SlopeScript : MonoBehaviour
     public NinjaMovement ninjaMovement;
     public int orientation; //1 = left, -1 = right
     public int angle;
-    private RigidBody2D ninjaPhysics;
+    public Rigidbody2D ninjaPhysics;
 
     private void Awake()
     {
@@ -19,10 +19,13 @@ public class SlopeScript : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider == ninjaBottom)
+        print(collision.collider);
+        if (collision.collider == ninjaBottom && ninjaMovement.slopeCheck())
         {
+            print("sup");
             ninjaMovement.makeSloped();
             ninjaMovement.setAngle(angle);
+            ninjaPhysics.gravityScale = 0.5f;
             ninja.transform.localEulerAngles = new Vector3(0f, 0f, orientation * angle);
         }
     }
@@ -31,7 +34,9 @@ public class SlopeScript : MonoBehaviour
     {
         if (collision.collider == ninja && !ninjaMovement.slopeCheck())
         {
+            ninjaMovement.setAngle(0);
             ninja.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+            ninjaPhysics.gravityScale = 1f;
         }
     }
 }

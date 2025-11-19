@@ -548,7 +548,7 @@ Transform:
   m_GameObject: {fileID: 238187186}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.114, y: -3.8453, z: 0}
+  m_LocalPosition: {x: 0.38, y: -3.8453, z: 0}
   m_LocalScale: {x: 0.1, y: 0.25, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -649,7 +649,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0
-  m_GravityScale: 1
+  m_GravityScale: 0.1
   m_Material: {fileID: 6200000, guid: 417e3798235be2640b7ade5fcc868693, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1042,7 +1042,6 @@ EdgeCollider2D:
   m_EdgeRadius: 0
   m_Points:
   - {x: -0.5, y: 0}
-  - {x: -0.30080032, y: 0.00051116943}
   - {x: 0.5, y: 0}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
@@ -1877,7 +1876,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1418786983}
   - component: {fileID: 1418786985}
-  - component: {fileID: 1418786986}
   m_Layer: 7
   m_Name: Ramp Hitbox
   m_TagString: Untagged
@@ -1893,33 +1891,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1418786982}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.38268343, w: 0.92387956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.080761, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 272105442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45}
---- !u!114 &1418786985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418786982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 768501186a4e8e94091c7a8bfe8fbbd9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SlopeScript
-  ninjaBottom: {fileID: 423392712}
-  ninja: {fileID: 238187193}
-  ninjaMovement: {fileID: 238187190}
-  orientation: 0
-  angle: 45
-  ninjaPhysics: {fileID: 238187192}
---- !u!61 &1418786986
-BoxCollider2D:
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!68 &1418786985
+EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1948,22 +1928,21 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.1965881, y: -0.0036635995}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.6068238, y: 1.4176768}
+  m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.49356246, y: -0.49246788}
+  - {x: -0.49997807, y: -0.5007553}
+  - {x: -0.49543428, y: -0.49621153}
+  - {x: 0.4963547, y: 0.4963572}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1001 &1439911898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2453,11 +2432,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1068410514904792756, guid: 12d81a5abd66f5f4a876a26ca48bde6d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.503
+      value: -0.49998
       objectReference: {fileID: 0}
     - target: {fileID: 1068410514904792756, guid: 12d81a5abd66f5f4a876a26ca48bde6d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.5
+      value: -3.50007
       objectReference: {fileID: 0}
     - target: {fileID: 1068410514904792756, guid: 12d81a5abd66f5f4a876a26ca48bde6d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2512,6 +2491,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3719412882332314221, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.50008
+      objectReference: {fileID: 0}
+    - target: {fileID: 3719412882332314221, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.50001
+      objectReference: {fileID: 0}
     - target: {fileID: 3727138841511837777, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
       propertyPath: ninja
       value: 
@@ -2524,10 +2511,6 @@ PrefabInstance:
       propertyPath: ninjaBottom
       value: 
       objectReference: {fileID: 423392712}
-    - target: {fileID: 4538591019834034415, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
-      propertyPath: ninjaPhysics
-      value: 
-      objectReference: {fileID: 238187192}
     - target: {fileID: 4538591019834034415, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
       propertyPath: ninjaMovement
       value: 
@@ -2576,8 +2559,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slope
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4538591019834034415, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3719412882332314221, guid: 4336f1aab8d19f34d8847d36c7fa27e9, type: 3}
@@ -2601,10 +2583,6 @@ PrefabInstance:
       propertyPath: ninjaBottom
       value: 
       objectReference: {fileID: 423392712}
-    - target: {fileID: 2372125951989818183, guid: 2a94c6735aff8a54d8fbeabcc5e15ea6, type: 3}
-      propertyPath: ninjaPhysics
-      value: 
-      objectReference: {fileID: 238187192}
     - target: {fileID: 2372125951989818183, guid: 2a94c6735aff8a54d8fbeabcc5e15ea6, type: 3}
       propertyPath: ninjaMovement
       value: 
@@ -2714,10 +2692,6 @@ PrefabInstance:
       propertyPath: ninjaBottom
       value: 
       objectReference: {fileID: 423392712}
-    - target: {fileID: 6147919388160905350, guid: d185be20c02c6f249b852ad802d88467, type: 3}
-      propertyPath: ninjaPhysics
-      value: 
-      objectReference: {fileID: 238187192}
     - target: {fileID: 6147919388160905350, guid: d185be20c02c6f249b852ad802d88467, type: 3}
       propertyPath: ninjaMovement
       value: 

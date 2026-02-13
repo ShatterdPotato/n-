@@ -26,8 +26,8 @@ public class NinjaMovement : MonoBehaviour
     [SerializeField] public float checkRadius;                                  //radius for circle used for any "checks" to see if ninja is near a ground or wall.
     [SerializeField] public LayerMask groundLayer;                              //Layer of all blocks that the ninja can jump on.
     [SerializeField] public LayerMask wallLayer;                                //Layer of all blocks that the ninja can cling onto.
-    [SerializeField] public LayerMask slopeLayer;                                //Layer of all slopes.
-    [SerializeField] public Collider2D ninjaEdge;                                //associated Collider2D of ninja, used for slope checking.
+    [SerializeField] public LayerMask slopeLayer;                               //Layer of all slopes.
+    [SerializeField] public Collider2D ninjaEdge;                               //associated Collider2D of ninja, used for slope checking.
     [SerializeField] private float deltaJumpPos;
     [SerializeField] private float horizontalAcc;
     [SerializeField] private float timeHeld;
@@ -188,7 +188,7 @@ public class NinjaMovement : MonoBehaviour
 
 
     private void handleJumpMovement(bool jumpPressed)
-    {
+    {   //before someone reads this comment below me just know it wa before when i was a dumbass who didn't know what enums were
         Action<int> jumpTimeCalc = (direction) => //dont ask why I did an int here just accept it ok? (-1 = left, 1 = right, 0 = ground) see it works im a genius
         {
             if (direction != 0)
@@ -211,6 +211,12 @@ public class NinjaMovement : MonoBehaviour
                 deltaJumpPos = 0f;
             }
         };
+
+        if (jumpPressed && slopeCheck())
+        {
+            ninjaPhysics.linearVelocityY += verticalAppliedForce;
+            jumpTimeCalc(0);
+        }
 
         if (jumpPressed && jumping)
         {

@@ -17,6 +17,7 @@ public class SlopeScript : MonoBehaviour
             orientation = 1;
 
     }
+    
     private void OnCollisionEnter2D(Collision2D collision)
     {
         print(collision.collider);

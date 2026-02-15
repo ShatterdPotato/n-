@@ -214,7 +214,8 @@ public class NinjaMovement : MonoBehaviour
 
         if (jumpPressed && slopeCheck())
         {
-            ninjaPhysics.linearVelocityY += verticalAppliedForce;
+            ninjaPhysics.linearVelocityY += verticalAppliedForce * (float) Math.Sin((Math.PI * 90 - angle) / 180);
+            ninjaPhysics.linearVelocityX += verticalAppliedForce * (float) Math.Cos((Math.PI * 90 - angle) / 180);
             jumpTimeCalc(0);
         }
 
